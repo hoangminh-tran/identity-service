@@ -19,10 +19,8 @@
 ## Docker guideline
 ### Build docker image
 `docker build -t <account>/identity-service:0.0.1 .`
-`docker build -t thminh101002/identity-service:0.0.1 .`
 ### Push docker image to Docker Hub
 `docker image push <account>/identity-service:0.0.1`
-`docker image push thminh101002/identity-service:0.0.1`
 ### Create network:
 `docker network create thminh-network`
 ### Start MySQL in thminh-network
