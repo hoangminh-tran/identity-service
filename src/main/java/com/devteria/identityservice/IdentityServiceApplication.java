@@ -122,6 +122,14 @@ public class IdentityServiceApplication {
                     .dob(LocalDate.of(1995, 8, 20))
                     .build();
 
+            UserCreationRequest user10 = UserCreationRequest.builder()
+                    .username("cristiano")
+                    .password("Aa@123456")
+                    .firstName("Ronaldo")
+                    .lastName("Ronaldo")
+                    .dob(LocalDate.of(1995, 8, 20))
+                    .build();
+
             userService.createUserWithRole(user1, PredefinedRole.USER_ROLE);
             userService.createUserWithRole(user2, PredefinedRole.USER_ROLE);
             userService.createUserWithRole(user3, PredefinedRole.USER_ROLE);
@@ -130,6 +138,7 @@ public class IdentityServiceApplication {
             userService.createUserWithRole(user6, PredefinedRole.USER_ROLE);
             userService.createUserWithRole(user7, PredefinedRole.USER_ROLE);
             userService.createUserWithRole(user8, PredefinedRole.USER_ROLE);
+            userService.createUserWithRole(user9, PredefinedRole.USER_ROLE);
             userService.createUserWithRole(user9, PredefinedRole.USER_ROLE);
         }
     }
