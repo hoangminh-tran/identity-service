@@ -25,24 +25,24 @@
 
 ### Create network:
 
-`docker network create thminh-network`
+`docker network create <user_name_network>`
 
-### Start MySQL in thminh-network
-`docker run --network thminh-network --name mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.39-debian`
+### Start MySQL in Docker Network
+`docker run --network <user_name_network> --name mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.39-debian`
 
-### Run your application in thminh-network
-`docker run --name identity-service --network thminh-network -p 8081:8080 -e DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service thminh101002/identity-service:0.0.1`
+### Run your application in Docker Network
+`docker run --name identity-service --network <user_name_network> -p 8081:8080 -e DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service thminh101002/identity-service:0.0.1`
 
 ## Install Docker on ubuntu
 
-# Add Docker's official GPG key:
+## Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add the repository to Apt sources:
+## Add the repository to Apt sources:
 echo \
 "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
 $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
