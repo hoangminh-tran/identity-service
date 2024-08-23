@@ -19,12 +19,17 @@
 ## Docker guideline
 ### Build docker image
 `docker build -t <account>/identity-service:0.0.1 .`
+
 ### Push docker image to Docker Hub
 `docker image push <account>/identity-service:0.0.1`
+
 ### Create network:
+
 `docker network create thminh-network`
+
 ### Start MySQL in thminh-network
 `docker run --network thminh-network --name mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.39-debian`
+
 ### Run your application in thminh-network
 `docker run --name identity-service --network thminh-network -p 8081:8080 -e DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service thminh101002/identity-service:0.0.1`
 
