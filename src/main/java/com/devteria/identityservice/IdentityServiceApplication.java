@@ -139,7 +139,7 @@ public class IdentityServiceApplication {
             userService.createUserWithRole(user7, PredefinedRole.USER_ROLE);
             userService.createUserWithRole(user8, PredefinedRole.USER_ROLE);
             userService.createUserWithRole(user9, PredefinedRole.USER_ROLE);
-            userService.createUserWithRole(user9, PredefinedRole.USER_ROLE);
+            userService.createUserWithRole(user10, PredefinedRole.USER_ROLE);
         }
     }
 }
