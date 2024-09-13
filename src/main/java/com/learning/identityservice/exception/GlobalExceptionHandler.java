@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import jakarta.validation.ConstraintViolation;
 
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -89,5 +91,26 @@ public class GlobalExceptionHandler {
         String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
 
         return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    ResponseEntity<ApiResponse> handlingIllegalArgumentException(IllegalArgumentException exception) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+                .body(ApiResponse.builder()
+                        .code(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    ResponseEntity<ApiResponse> handlingConstraintViolationException(ConstraintViolationException exception) {
+
+        String errorMessage = exception.getConstraintViolations().iterator().next().getMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+                .body(ApiResponse.builder()
+                        .code(HttpStatus.BAD_REQUEST.value())
+                        .message(errorMessage)
+                        .build());
     }
 }

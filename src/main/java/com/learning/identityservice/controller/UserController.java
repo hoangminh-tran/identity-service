@@ -2,6 +2,7 @@ package com.learning.identityservice.controller;
 
 import java.util.List;
 
+import com.learning.identityservice.validator.UUIDConstraint;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +41,10 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/{userId}")
-    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
+    @GetMapping("/{userID}")
+    ApiResponse<UserResponse> getUser(@PathVariable("userID") String userID) {
         return ApiResponse.<UserResponse>builder()
-                .result(userService.getUser(userId))
+                .result(userService.getUser(userID))
                 .build();
     }
 
@@ -54,16 +55,16 @@ public class UserController {
                 .build();
     }
 
-    @DeleteMapping("/{userId}")
-    ApiResponse<String> deleteUser(@PathVariable String userId) {
-        userService.deleteUser(userId);
+    @DeleteMapping("/{userID}")
+    ApiResponse<String> deleteUser(@UUIDConstraint @PathVariable String userID) {
+        userService.deleteUser(userID);
         return ApiResponse.<String>builder().result("User has been deleted").build();
     }
 
-    @PutMapping("/{userId}")
-    ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
+    @PutMapping("/{userID}")
+    ApiResponse<UserResponse> updateUser(@UUIDConstraint @PathVariable String userID, @Valid @RequestBody UserUpdateRequest request) {
         return ApiResponse.<UserResponse>builder()
-                .result(userService.updateUser(userId, request))
+                .result(userService.updateUser(userID, request))
                 .build();
     }
 }

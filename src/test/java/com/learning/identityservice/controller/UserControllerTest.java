@@ -1,6 +1,7 @@
 package com.learning.identityservice.controller;
 
 import com.learning.identityservice.dto.request.UserCreationRequest;
+import com.learning.identityservice.dto.request.UserUpdateRequest;
 import com.learning.identityservice.dto.response.UserResponse;
 import com.learning.identityservice.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +38,8 @@ public class UserControllerTest {
 
     private UserCreationRequest userCreationRequest;
 
+    private UserUpdateRequest userUpdateRequest;
+
     private UserResponse userResponse;
 
     @BeforeEach
@@ -51,9 +54,17 @@ public class UserControllerTest {
                 .dob(LocalDate.of(1997, 3, 27))
                 .build();
 
+        userUpdateRequest = UserUpdateRequest
+                .builder()
+                .password("Aa@123456")
+                .firstName("la la")
+                .lastName("lisa")
+                .dob(LocalDate.of(1997, 3, 27))
+                .build();
+
         userResponse = UserResponse
                 .builder()
-                .id("0741195e")
+                .id("0741195e-1774-4cd5-a47c-e99db62d5aa0")
                 .username("lalalisa")
                 .firstName("la la")
                 .lastName("lisa")
@@ -92,7 +103,7 @@ public class UserControllerTest {
                 .andExpect(
                         MockMvcResultMatchers
                                 .jsonPath("result.id")
-                                .value("0741195e")
+                                .value("0741195e-1774-4cd5-a47c-e99db62d5aa0")
                 );
     }
 
@@ -129,6 +140,114 @@ public class UserControllerTest {
                         MockMvcResultMatchers
                                 .jsonPath("message")
                                 .value("Username must be at least 4 characters")
+                );
+    }
+
+    @Test
+    void updateUser_userIDIsInvalidUUIDString_fail() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        var content = objectMapper.writeValueAsString(userUpdateRequest);
+        var userID = "11223344";
+
+        Mockito.when(userService.updateUser(ArgumentMatchers.any(), ArgumentMatchers.any()))
+                .thenReturn(userResponse);
+
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/users/" + userID)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(content))
+                .andExpect(
+                        MockMvcResultMatchers
+                                .status()
+                                .isBadRequest()
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("code")
+                                .value(6969)
+                );
+
+    }
+
+    @Test
+    void updateUser_userUpdateRequestWithDOBIsValid_fail() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        userUpdateRequest.setDob(LocalDate.of(2022, 02, 02));
+        var content = objectMapper.writeValueAsString(userUpdateRequest);
+        var userID = "0741195e-1774-4cd5-a47c-e99db62d5aa0";
+
+        Mockito.when(userService.updateUser(ArgumentMatchers.any(), ArgumentMatchers.any()))
+                .thenReturn(userResponse);
+
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/users/" + userID)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(content)
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .status()
+                                .isBadRequest()
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("code")
+                                .value(6969)
+                );
+    }
+
+    @Test
+    void updateUser_userUpdateRequestIsValid_success() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        var content = objectMapper.writeValueAsString(userUpdateRequest);
+        var userID = "0741195e-1774-4cd5-a47c-e99db62d5aa0";
+
+        Mockito.when(userService.updateUser(ArgumentMatchers.any(), ArgumentMatchers.any()))
+                .thenReturn(userResponse);
+
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/users/" + userID)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(content)
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .status()
+                                .isOk()
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("result.id")
+                                .value(userID)
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("result.username")
+                                .value(userResponse.getUsername())
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("result.firstName")
+                                .value(userResponse.getFirstName())
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("result.lastName")
+                                .value(userResponse.getLastName())
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("result.dob")
+                                .value(userResponse.getDob().toString())
                 );
     }
 }
