@@ -2,6 +2,7 @@ package com.learning.identityservice.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -11,25 +12,16 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * The type Redis config.
- */
 @Slf4j
-@Configuration
+@TestConfiguration
 @EnableRedisRepositories
-public class RedisConfig {
+public class RedisTestConfig {
     @Value("${spring.redis.host}")
     private String redisHost;
 
     @Value("${spring.redis.port}")
     private int redisPort;
 
-    /**
-     * Creates and configures a {@link JedisConnectionFactory} for Redis.
-     * This factory is used to create connections to the Redis server.
-     *
-     * @return a configured {@link JedisConnectionFactory} instance
-     */
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(){
         log.info("Connecting Redis: {} {}", redisHost, redisPort);
@@ -39,13 +31,6 @@ public class RedisConfig {
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
-    /**
-     * Configures a {@link RedisTemplate} for interacting with Redis.
-     * This template is used to perform operations on Redis, such as storing and retrieving data.
-     * The template is configured with serializers for both keys and values.
-     *
-     * @return a configured {@link RedisTemplate} instance
-     */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(){
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate();

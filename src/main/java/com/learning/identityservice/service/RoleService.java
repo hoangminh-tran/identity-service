@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The type Role service.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,20 +25,41 @@ public class RoleService {
     RoleRepository roleRepository;
     RoleMapper roleMapper;
 
+    /**
+     * Create role response.
+     *
+     * @param request the request
+     * @return the role response
+     */
     public RoleResponse create(RoleRequest request) {
         var role = roleMapper.toRole(request);
         role = roleRepository.save(role);
         return roleMapper.toRoleResponse(role);
     }
 
+    /**
+     * Gets all.
+     *
+     * @return the all
+     */
     public List<RoleResponse> getAll() {
         return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
     }
 
+    /**
+     * Delete.
+     *
+     * @param role the role
+     */
     public void delete(String role) {
         roleRepository.deleteById(role);
     }
 
+    /**
+     * Count roles long.
+     *
+     * @return the long
+     */
     public long countRoles() {
         return roleRepository.count();
     }

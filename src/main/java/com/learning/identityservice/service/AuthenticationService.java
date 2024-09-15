@@ -37,6 +37,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The type Authentication service.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -45,18 +48,35 @@ public class AuthenticationService {
     UserRepository userRepository;
     InvalidatedTokenRepository invalidatedTokenRepository;
 
+    /**
+     * The Signer key.
+     */
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
 
+    /**
+     * The Valid duration.
+     */
     @NonFinal
     @Value("${jwt.valid-duration}")
     protected long VALID_DURATION;
 
+    /**
+     * The Refreshable duration.
+     */
     @NonFinal
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
 
+    /**
+     * Introspect introspect response.
+     *
+     * @param request the request
+     * @return the introspect response
+     * @throws JOSEException  the jose exception
+     * @throws ParseException the parse exception
+     */
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
         boolean isValid = true;
@@ -70,6 +90,12 @@ public class AuthenticationService {
         return IntrospectResponse.builder().valid(isValid).build();
     }
 
+    /**
+     * Authenticate authentication response.
+     *
+     * @param request the request
+     * @return the authentication response
+     */
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepository
@@ -85,6 +111,13 @@ public class AuthenticationService {
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 
+    /**
+     * Logout.
+     *
+     * @param request the request
+     * @throws ParseException the parse exception
+     * @throws JOSEException  the jose exception
+     */
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
         try {
             var signToken = verifyToken(request.getToken(), true);
@@ -101,6 +134,14 @@ public class AuthenticationService {
         }
     }
 
+    /**
+     * Refresh token authentication response.
+     *
+     * @param request the request
+     * @return the authentication response
+     * @throws ParseException the parse exception
+     * @throws JOSEException  the jose exception
+     */
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
         var signedJWT = verifyToken(request.getToken(), true);
 

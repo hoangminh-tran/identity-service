@@ -3,17 +3,23 @@ package com.learning.identityservice;
 import com.learning.identityservice.constant.PredefinedRole;
 import com.learning.identityservice.dto.request.RoleRequest;
 import com.learning.identityservice.dto.request.UserCreationRequest;
+import com.learning.identityservice.entity.RedisUserTest;
+import com.learning.identityservice.entity.User;
+import com.learning.identityservice.service.BaseRedisService;
 import com.learning.identityservice.service.RoleService;
 import com.learning.identityservice.service.UserService;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 
+@Slf4j
 @SpringBootApplication
 public class IdentityServiceApplication {
     @Autowired
@@ -26,7 +32,22 @@ public class IdentityServiceApplication {
     private RoleService roleService;
 
     public static void main(String[] args) {
-        SpringApplication.run(IdentityServiceApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(IdentityServiceApplication.class, args);
+
+        User user = User
+                .builder()
+                .id("0741195e-1774-4cd5-a47c-e99db62d5aa0")
+                .username("lalalisa")
+                .firstName("la la")
+                .lastName("lisa")
+                .build();
+
+        BaseRedisService<String, String, Object> baseRedisService = context.getBean(BaseRedisService.class);
+
+        String key = "userRedisTestKey" + user.getId();
+        baseRedisService.setValue(key, user);
+
+        log.info("Redis Value {}", baseRedisService.getValue(key));
     }
 
     @PostConstruct
